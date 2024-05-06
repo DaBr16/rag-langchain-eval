@@ -1,0 +1,6 @@
+.env
+.pynb_checkpoints/
+__pycache__/
+vectorstores/
+fiqa_dataset/
+testdata/
