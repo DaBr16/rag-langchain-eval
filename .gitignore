@@ -1,5 +1,5 @@
 .env
-.pynb_checkpoints/
+.ipynb_checkpoints/
 __pycache__/
 vectorstores/
 fiqa_dataset/
