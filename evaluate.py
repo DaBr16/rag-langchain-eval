@@ -35,22 +35,27 @@ eval_dataset = fiqa_main.to_pandas()
 eval_dataset['answer'] = np.nan
 eval_dataset['contexts'] = np.nan
 
+# extend dataset
+dataset_final = pd.DataFrame(np.repeat(eval_dataset.values, 5, axis=0))
+dataset_final.columns = eval_dataset.columns
+print(dataset_final)
+
 # set added columns to dtype cause of FutureWarning from pandas
-eval_dataset['answer'] = eval_dataset['answer'].astype('object')
-eval_dataset['contexts'] = eval_dataset['contexts'].astype('object')
+dataset_final['answer'] = dataset_final['answer'].astype('object')
+dataset_final['contexts'] = dataset_final['contexts'].astype('object')
 
 # fill evaluation dataset
-for index, row in eval_dataset.iterrows():
+for index, row in dataset_final.iterrows():
     question = row['question']
-    eval_dataset.at[index, 'answer'] = openAI_rag.answer_question(question)
-    eval_dataset.at[index, 'contexts'] = openAI_rag.collect_context(question)
+    dataset_final.at[index, 'answer'] = openAI_rag.answer_question(question)
+    dataset_final.at[index, 'contexts'] = openAI_rag.collect_context(question)
 
 now = datetime.now()
 file_name = now.strftime("%H:%M %d.%m.%Y")
 
-eval_dataset.to_parquet(f'eval_datasets/{file_name}.parquet')
+dataset_final.to_parquet(f'eval_datasets/{file_name}.parquet')
 
-dataset = Dataset.from_pandas(eval_dataset)
+dataset = Dataset.from_pandas(dataset_final)
 
 print("Stopping the process.")
 time.sleep(60)  
