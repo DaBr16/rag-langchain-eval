@@ -2,9 +2,9 @@ from rag import Rag
 from evaluator import RagEvaluator
 open_ai = Rag('percentile', 'GPT-3.5')
 
-rag_evaluator = RagEvaluator(open_ai)
+rag_evaluator = RagEvaluator(open_ai, num_of_runs=1)
 
-rag_evaluator.get_golden_dataset(1)
+golden_dataset = rag_evaluator.get_golden_dataset(1)
 
 result = rag_evaluator.get_mean_result()
 
