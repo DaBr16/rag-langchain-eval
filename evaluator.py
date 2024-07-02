@@ -15,7 +15,8 @@ import os
 from dotenv import load_dotenv 
 
 class RagEvaluator:
-    def __init__(self, rag: Rag, num_of_questions=18, num_of_runs=5, metrics=[answer_relevancy, answer_correctness, context_recall, context_relevancy]):
+    def __init__(self, rag: Rag, num_of_questions=18, num_of_runs=5, 
+                 metrics=[answer_relevancy, answer_correctness, context_recall, context_relevancy]):
         self.rag = rag
         self.num_of_questions = num_of_questions
         self.num_of_runs = num_of_runs
@@ -23,8 +24,6 @@ class RagEvaluator:
         self.golden_dataset_list = []
         self.eval_results = self.__evaluate()
         
-
-    
     def __evaluate(self):
         load_dotenv()
         os.environ.get('OPENAI_API_KEY')
@@ -32,14 +31,13 @@ class RagEvaluator:
         num = 1
         while num <= self.num_of_runs:
             dataset = self.create_golden_dataset()
-            result = evaluate(dataset = dataset, llm=ChatOpenAI(model_name='gpt-3.5-turbo-0125', temperature=0.0), embeddings=OpenAIEmbeddings(model='text-embedding-3-small'), metrics=self.metrics, raise_exceptions=False)
+            result = evaluate(dataset = dataset, llm=ChatOpenAI(model_name='gpt-3.5-turbo-0125', temperature=0.0), 
+                              embeddings=OpenAIEmbeddings(model='text-embedding-3-small'), metrics=self.metrics, raise_exceptions=False)
             eval_results.append(dict(result))
             num +=1
 
         return eval_results
 
-
-    # NOTE: creating eval dataset on each run ? 
     def create_golden_dataset(self):
         # Load FIQA dataset
         fiqa_main = load_dataset("explodinggradients/fiqa", "main", split=f"train[:{self.num_of_questions}]")
@@ -93,7 +91,8 @@ class RagEvaluator:
         mean_answer_correctness = round(np.mean(answer_correctness), 4)
         mean_context_recall = round(np.mean(context_recalls), 4)
         mean_context_relevancy = round(np.mean(context_relevancies), 4)
-        means = {'answer_relevancy': mean_answer_relevancy, 'answer_correctness': mean_answer_correctness, 'context_recall': mean_context_recall, 'context_relevancy': mean_context_relevancy}
+        means = {'answer_relevancy': mean_answer_relevancy, 'answer_correctness': mean_answer_correctness, 
+                 'context_recall': mean_context_recall, 'context_relevancy': mean_context_relevancy}
 
         return means
 
