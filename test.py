@@ -1,12 +1,14 @@
 from rag import Rag
 from evaluator import RagEvaluator
-open_ai = Rag('fixed_size_1500', 'GPT-3.5')
+recursive_2000_rag = Rag(chunkingstrategy='recursive_size_2000', llm='gpt-3.5-turbo-0125', embedding='text-embedding-3-small')
+recursive_2000_eval = RagEvaluator(rag=recursive_2000_rag, eval_llm='gpt-3.5-turbo-0125', embedding_function='text-embedding-3-small', num_of_runs=1, num_of_questions=2)
 
-rag_evaluator = RagEvaluator(open_ai)
 
-# rag_evaluator.get_golden_dataset(1)
+recursive_2000_eval.get_golden_dataset(1)
 
-result = rag_evaluator.get_mean_result()
+result = recursive_2000_eval.get_mean_result()
+
+
 
 
 print(result)
