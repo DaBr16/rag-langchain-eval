@@ -85,6 +85,16 @@ class RagEvaluator:
         return eval_results
 
     def create_golden_dataset(self):
+        """
+        Create the golden dataset for evaluation.
+
+        This method loads the FIQA dataset, initializes additional columns for answers
+        and contexts, populates these columns by querying the RAG system, and stores
+        the dataset in the golden dataset list.
+
+        Returns:
+            Dataset: The golden dataset with questions, answers, and contexts.
+        """
         # Load FIQA dataset
         fiqa_main = load_dataset(
             "explodinggradients/fiqa", "main", split=f"train[:{self.num_of_questions}]"
@@ -114,6 +124,15 @@ class RagEvaluator:
         return golden_dataset
 
     def get_mean_result(self):
+        """
+        Calculate the mean of evaluation metrics.
+
+        This method computes the mean values for each evaluation metric across
+        all evaluation runs.
+
+        Returns:
+            dict: A dictionary containing the mean values of each evaluation metric.
+        """
         # Create lists to store metrics
         answer_relevancies = []
         answer_correctness = []
@@ -149,10 +168,27 @@ class RagEvaluator:
         return means
 
     def get_result(self, run_number: int):
+        """
+        Retrieve evaluation results for a specific run.
 
+        Args:
+            run_number (int): The run number to retrieve results for (1-based index).
+
+        Returns:
+            dict: A dictionary containing the evaluation metrics for the specified run.
+        """
         num = run_number - 1
         return self.eval_results[num]
 
     def get_golden_dataset(self, run_number: int):
+        """
+        Retrieve the golden dataset for a specific run.
+
+        Args:
+            run_number (int): The run number to retrieve the golden dataset for (1-based index).
+
+        Returns:
+            Dataset: The golden dataset for the specified run.
+        """
         num = run_number - 1
         return self.golden_dataset_list[num]
